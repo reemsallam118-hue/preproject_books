@@ -148,8 +148,8 @@ class _SearchViewState extends State<SearchView> {
                     trailing: IconButton(
                       icon: Icon(
                         isInLibrary(book)
-                            ? Icons.bookmark
-                            : Icons.bookmark_border,
+                            ? Icons.favorite
+                            : Icons.favorite_border,
                         color: Color(0xFFA8434B),
                       ),
                       onPressed: () {
@@ -159,7 +159,7 @@ class _SearchViewState extends State<SearchView> {
                           addToLibrary(book);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text(tr('تمت الإضافة إلى مكتبتي', 'Added to my library'))),
+                                content: Text(tr('تمت الإضافة إلى المفضلة', 'Added to my favorites'))),
                           );
                         }
                         setState(() {});

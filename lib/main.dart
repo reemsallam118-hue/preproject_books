@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'services/books_service.dart';
 import 'views/home_view.dart';
-
 void main() {
-  runApp(MyApp());
-}
-
+  runApp(MyApp());}
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,12 +14,5 @@ class MyApp extends StatelessWidget {
           builder: (context, child) {
             return Directionality(
               textDirection: arabic ? TextDirection.rtl : TextDirection.ltr,
-              child: child!,
-            );
-          },
-          home: HomeView(),
-        );
-      },
-    );
-  }
-}
+              child: child!,);},
+          home: HomeView(),);},);}}

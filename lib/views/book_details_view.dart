@@ -90,10 +90,10 @@ class _BookDetailsViewState extends State<BookDetailsView> {
                   added = true;
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(tr('تمت الإضافة إلى مكتبتي', 'Added to my library'))),
+                  SnackBar(content: Text(tr('تمت الإضافة إلى المفضلة', 'Added to my favorites'))),
                 );
               },
-              child: Text(added ? tr('تمت الإضافة إلى مكتبتي', 'Added to my library') : tr('أضف إلى مكتبتي', 'Add to my library')),
+              child: Text(added ? tr('تمت الإضافة إلى المفضلة', 'Added to my favorites') : tr('أضف إلى المفضلة', 'Add to my favorites')),
             ),
           ),
           SizedBox(height: 20),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/books_service.dart';
 import 'search_view.dart';
 import 'book_details_view.dart';
-import 'Maktabty.dart';
+import 'favorites.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -17,8 +17,7 @@ class _HomeViewState extends State<HomeView> {
     List pages = [
       HomeContent(),
       SearchView(''),
-      MaktabtyView(),
-    ];
+      favoritesView(onDiscover: () => setState(() => currentIndex = 0)),    ];
 
     return Scaffold(
       backgroundColor: Color(0xFFF5EDE4),
@@ -37,7 +36,7 @@ class _HomeViewState extends State<HomeView> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: tr('الرئيسية', 'Home')),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: tr('بحث', 'Search')),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: tr('مكتبتي', 'Library')),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: tr('المفضلة', ' my favorites')),
         ],
       ),
     );

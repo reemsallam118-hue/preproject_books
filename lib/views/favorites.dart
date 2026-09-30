@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
 import '../services/books_service.dart';
+import '../widgets/empty_state.dart';
 import 'book_details_view.dart';
 
-class MaktabtyView extends StatefulWidget {
+class favoritesView extends StatefulWidget {
+  final VoidCallback? onDiscover;
+
+  const favoritesView({super.key, this.onDiscover});
+
   @override
-  State<MaktabtyView> createState() => _MaktabtyViewState();
+  State<favoritesView> createState() => _favoritesViewState();
 }
 
-class _MaktabtyViewState extends State<MaktabtyView> {
+class _favoritesViewState extends State<favoritesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5EDE4),
+      backgroundColor: const Color(0xFFF5EDE4),
       appBar: AppBar(
-        backgroundColor: Color(0xFFF5EDE4),
-        title: Text(tr('مكتبتي', 'My library')),
+        backgroundColor: const Color(0xFFF5EDE4),
+        title: Text(tr('المفضلة', 'My favorites')),
         centerTitle: true,
       ),
       body: libraryBooks.isEmpty
-          ? Center(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Text(
-            tr(
-              'مكتبتك فارغة\nاضغط "أضف إلى مكتبتي" في صفحة أي كتاب لإضافته هنا',
-              'Your library is empty\nPress "Add to my library" on any book page to add it here',
-            ),
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Color(0xFF8A8A8A)),
-          ),
+          ? EmptyState(
+        title: tr('لا توجد كتب مفضلة بعد', 'No favorites yet'),
+        subtitle: tr(
+          'أضف كتباً تعجبك لتظهر هنا',
+          'Add books you like and they will show up here',
         ),
+        buttonText: tr('اكتشف كتب', 'Discover books'),
+        onPressed: () => widget.onDiscover?.call(),
       )
           : ListView.builder(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         itemCount: libraryBooks.length,
         itemBuilder: (context, index) {
           var book = libraryBooks[index];
@@ -40,7 +41,8 @@ class _MaktabtyViewState extends State<MaktabtyView> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BookDetailsView(book)),
+                MaterialPageRoute(
+                    builder: (context) => BookDetailsView(book)),
               ).then((value) {
                 setState(() {});
               });
@@ -50,11 +52,12 @@ class _MaktabtyViewState extends State<MaktabtyView> {
               book['title'] ?? '',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(getAuthor(book)),
             trailing: IconButton(
-              icon: Icon(Icons.delete_outline, color: Color(0xFFA8434B)),
+              icon: const Icon(Icons.delete_outline,
+                  color: Color(0xFFA8434B)),
               onPressed: () {
                 setState(() {
                   libraryBooks.removeAt(index);
