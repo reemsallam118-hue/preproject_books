@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import '../services/books_service.dart';
+import 'package:preproject_books/Constants/books_information.dart';
 import 'book_details_view.dart';
 
 class SearchView extends StatefulWidget {
   final String query;
-  SearchView(this.query);
+  final VoidCallback? onHome;
+  SearchView(this.query, {this.onHome});
 
   @override
   State<SearchView> createState() => _SearchViewState();
 }
 
 class _SearchViewState extends State<SearchView> {
+  static const Color _rose = Color(0xFFA8434B);
+
   List books = [];
   bool loading = true;
   TextEditingController controller = TextEditingController();
@@ -23,6 +26,12 @@ class _SearchViewState extends State<SearchView> {
     super.initState();
     controller.text = widget.query;
     search();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   void search() async {
@@ -39,6 +48,7 @@ class _SearchViewState extends State<SearchView> {
     } catch (e) {
       books = [];
     }
+    if (!mounted) return;
     setState(() {
       loading = false;
     });
@@ -49,121 +59,237 @@ class _SearchViewState extends State<SearchView> {
     List tabNames = [tr('الكل', 'All'), tr('كتب', 'Books'), tr('مؤلفون', 'Authors')];
 
     return Scaffold(
-      backgroundColor: Color(0xFFF5EDE4),
+      backgroundColor: const Color(0xFFF5EDE4),
       appBar: AppBar(
-        backgroundColor: Color(0xFFF5EDE4),
-        title: Text(tr('نتائج البحث', 'Search results')),
+        backgroundColor: const Color(0xFFF5EDE4),
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: Text(
+          tr('نتائج البحث', 'Search results'),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home_outlined, color: _rose),
+            onPressed: () {
+              if (widget.onHome != null) {
+                widget.onHome!();
+              } else {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              }
+            },
+          ),
+        ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
         child: Column(
           children: [
-            TextField(
-              controller: controller,
-              onSubmitted: (text) {
-                search();
-              },
-              decoration: InputDecoration(
-                hintText: tr('ابحث عن كتاب أو مؤلف...', 'Search for a book or author...'),
-                suffixIcon: Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+            // خانة البحث
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: controller,
+                textInputAction: TextInputAction.search,
+                onSubmitted: (text) {
+                  search();
+                },
+                decoration: InputDecoration(
+                  hintText: tr('ابحث عن كتاب أو مؤلف...',
+                      'Search for a book or author...'),
+                  hintStyle: const TextStyle(color: Color(0xFF8A8A8A)),
+                  prefixIcon: IconButton(
+                    icon: const Icon(Icons.search, color: _rose),
+                    onPressed: search,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 14),
 
-            Row(
-              children: [
-                for (int i = 0; i < 3; i++)
-                  GestureDetector(
-                    onTap: () {
-                      selectedTab = i;
-                      search();
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(left: 20),
-                      padding: EdgeInsets.only(bottom: 6),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: selectedTab == i
-                                ? Color(0xFFA8434B)
-                                : Colors.transparent,
-                            width: 2,
+            // التابات كأزرار
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Row(
+                children: [
+                  for (int i = 0; i < 3; i++)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 8),
+                      child: GestureDetector(
+                        onTap: () {
+                          selectedTab = i;
+                          search();
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: selectedTab == i ? _rose : Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            tabNames[i],
+                            style: TextStyle(
+                              color: selectedTab == i
+                                  ? Colors.white
+                                  : const Color(0xFF8A8A8A),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                      child: Text(
-                        tabNames[i],
-                        style: TextStyle(
-                          color: selectedTab == i
-                              ? Color(0xFFA8434B)
-                              : Color(0xFF8A8A8A),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-            Divider(),
+            const SizedBox(height: 12),
 
             Expanded(
               child: loading
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(
+                  child: CircularProgressIndicator(color: _rose))
                   : books.isEmpty
-                  ? Center(child: Text(tr('لا توجد نتائج', 'No results')))
+                  ? Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.search_off_rounded,
+                        size: 64, color: _rose.withOpacity(0.4)),
+                    const SizedBox(height: 12),
+                    Text(
+                      tr('لا توجد نتائج', 'No results'),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF8A8A8A),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              )
                   : ListView.builder(
+                padding: const EdgeInsets.only(bottom: 16),
                 itemCount: books.length,
                 itemBuilder: (context, index) {
                   var book = books[index];
-                  return ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BookDetailsView(book),
+                  var year =
+                  (book['first_publish_year'] ?? '').toString();
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
                         ),
-                      ).then((value) {
-                        setState(() {});
-                      });
-                    },
-                    leading: bookCover(book, 50, 75),
-                    title: Text(
-                      book['title'] ?? '',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      ],
                     ),
-                    subtitle: Text(
-                      getAuthor(book) +
-                          '  •  ' +
-                          (book['first_publish_year'] ?? '').toString(),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(
-                        isInLibrary(book)
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: Color(0xFFA8434B),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  BookDetailsView(book),
+                            ),
+                          ).then((value) {
+                            setState(() {});
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius:
+                                BorderRadius.circular(8),
+                                child: bookCover(book, 60, 90),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      book['title'] ?? '',
+                                      maxLines: 2,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      year == ''
+                                          ? getAuthor(book)
+                                          : getAuthor(book) +
+                                          '  •  ' +
+                                          year,
+                                      maxLines: 1,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: Color(0xFF8A8A8A),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  isInLibrary(book)
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: _rose,
+                                ),
+                                onPressed: () {
+                                  if (isInLibrary(book)) {
+                                    removeFromLibrary(book);
+                                  } else {
+                                    addToLibrary(book);
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                      SnackBar(
+                                        content: Text(tr(
+                                            'تمت الإضافة إلى المفضلة',
+                                            'Added to my favorites')),
+                                      ),
+                                    );
+                                  }
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      onPressed: () {
-                        if (isInLibrary(book)) {
-                          removeFromLibrary(book);
-                        } else {
-                          addToLibrary(book);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text(tr('تمت الإضافة إلى المفضلة', 'Added to my favorites'))),
-                          );
-                        }
-                        setState(() {});
-                      },
                     ),
                   );
                 },

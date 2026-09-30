@@ -1,18 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 ValueNotifier<bool> isArabic = ValueNotifier(true);
-
 String tr(String ar, String en) {
   if (isArabic.value) {
     return ar;
   }
   return en;
 }
-
 List libraryBooks = [];
-
 Future<List> getBooks(String q) async {
   var url = Uri.parse(
       'https://openlibrary.org/search.json?q=${Uri.encodeComponent(q)}&limit=15');
@@ -20,7 +16,6 @@ Future<List> getBooks(String q) async {
   var data = jsonDecode(response.body);
   return data['docs'];
 }
-
 Future<List> searchBooks(String text, String type) async {
   String param = 'q';
   if (type == 'books') {
@@ -35,7 +30,6 @@ Future<List> searchBooks(String text, String type) async {
   var data = jsonDecode(response.body);
   return data['docs'];
 }
-
 Widget bookCover(Map book, double w, double h) {
   if (book['cover_i'] == null) {
     return Container(
@@ -58,14 +52,12 @@ Widget bookCover(Map book, double w, double h) {
     fit: BoxFit.cover,
   );
 }
-
 String getAuthor(Map book) {
   if (book['author_name'] == null) {
     return tr('غير معروف', 'Unknown');
   }
   return book['author_name'][0];
 }
-
 bool isInLibrary(Map book) {
   for (var b in libraryBooks) {
     if (b['key'] == book['key']) {
@@ -74,17 +66,14 @@ bool isInLibrary(Map book) {
   }
   return false;
 }
-
 void addToLibrary(Map book) {
   if (isInLibrary(book) == false) {
     libraryBooks.add(book);
   }
 }
-
 void removeFromLibrary(Map book) {
   libraryBooks.removeWhere((b) => b['key'] == book['key']);
 }
-
 Widget languageSwitch() {
   return Container(
     decoration: BoxDecoration(
