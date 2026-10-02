@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:preproject_books/Constants/app_colors.dart';
 
 class EmptyState extends StatelessWidget {
   final String title;
@@ -20,7 +21,6 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // حركة دخول ناعمة: الشاشة تظهر تدريجياً وتطلع لفوق شوية
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
       duration: const Duration(milliseconds: 700),
@@ -40,15 +40,15 @@ class EmptyState extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              logo ?? _defaultLogo(),
+              logo ?? _defaultLogo(context),
               const SizedBox(height: 32),
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF2B2B2B),
+                  color: context.mainText,
                   height: 1.3,
                 ),
               ),
@@ -101,15 +101,13 @@ class EmptyState extends StatelessWidget {
     );
   }
 
-  // لوجو: دايرة ناعمة بتدرج + كتاب + قلب + نجوم
-  Widget _defaultLogo() {
+  Widget _defaultLogo(BuildContext context) {
     return SizedBox(
       width: 190,
       height: 170,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // الهالة الخلفية
           Container(
             width: 170,
             height: 170,
@@ -126,9 +124,9 @@ class EmptyState extends StatelessWidget {
           Container(
             width: 120,
             height: 120,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFEBD9CC),
+              color: context.surface,
             ),
           ),
           const Icon(Icons.menu_book_rounded,
@@ -138,7 +136,7 @@ class EmptyState extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: const Color(0xFFF5EDE4),
+                color: context.bg,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(

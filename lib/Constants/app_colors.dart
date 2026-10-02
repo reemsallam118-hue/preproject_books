@@ -25,3 +25,15 @@ class AppColors {
     coverBlack,
   ];
 }
+
+// ألوان بتتغير حسب الثيم (فاتح / داكن) - استخدمها كده: context.bg, context.card ...
+extension AppThemeColors on BuildContext {
+  bool get _isDarkTheme => Theme.of(this).brightness == Brightness.dark;
+
+  Color get bg => _isDarkTheme ? const Color(0xFF1C1714) : const Color(0xFFF5EDE4);
+  Color get card => _isDarkTheme ? const Color(0xFF2A231F) : Colors.white;
+  Color get surface => _isDarkTheme ? const Color(0xFF3B302A) : const Color(0xFFEDE0D0);
+  Color get divider => _isDarkTheme ? const Color(0xFF3D322C) : const Color(0xFFE3D3C6);
+  Color get subText => _isDarkTheme ? const Color(0xFFC9BDB4) : const Color(0xFF6A6A6A);
+  Color get mainText => _isDarkTheme ? const Color(0xFFF2E9E2) : const Color(0xFF2B2B2B);
+}

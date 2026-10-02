@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:preproject_books/Constants/app_colors.dart';
 import 'package:preproject_books/Constants/books_information.dart';
 import 'book_details_view.dart';
 
@@ -59,9 +60,9 @@ class _SearchViewState extends State<SearchView> {
     List tabNames = [tr('الكل', 'All'), tr('كتب', 'Books'), tr('مؤلفون', 'Authors')];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5EDE4),
+      backgroundColor: context.bg,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5EDE4),
+        backgroundColor: context.bg,
         elevation: 0,
         scrolledUnderElevation: 0,
         title: Text(
@@ -86,7 +87,6 @@ class _SearchViewState extends State<SearchView> {
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
         child: Column(
           children: [
-            // خانة البحث
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
@@ -113,7 +113,7 @@ class _SearchViewState extends State<SearchView> {
                     onPressed: search,
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: context.card,
                   contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -124,7 +124,6 @@ class _SearchViewState extends State<SearchView> {
             ),
             const SizedBox(height: 14),
 
-            // التابات كأزرار
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: Row(
@@ -142,7 +141,7 @@ class _SearchViewState extends State<SearchView> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 18, vertical: 8),
                           decoration: BoxDecoration(
-                            color: selectedTab == i ? _rose : Colors.white,
+                            color: selectedTab == i ? _rose : context.card,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
@@ -195,7 +194,7 @@ class _SearchViewState extends State<SearchView> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.card,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(

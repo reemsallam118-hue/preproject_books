@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:preproject_books/Constants/app_colors.dart';
 import 'package:preproject_books/Constants/books_information.dart';
 import 'search_view.dart';
 import 'book_details_view.dart';
 import 'favorites_view.dart';
+import 'maktabty_view.dart';
+import 'settings_view.dart';
 
 const Color _rose = Color(0xFFA8434B);
 
@@ -27,15 +30,17 @@ class _HomeViewState extends State<HomeView> {
     List pages = [
       HomeContent(),
       SearchView('', onHome: () => setState(() => currentIndex = 0)),
+      MaktabtyView(onDiscover: () => setState(() => currentIndex = 0)),
       favoritesView(onDiscover: () => setState(() => currentIndex = 0)),
+      SettingsView(onBack: () => setState(() => currentIndex = 0)),
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5EDE4),
+      backgroundColor: context.bg,
       body: pages[currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.card,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           boxShadow: [
             BoxShadow(
@@ -50,11 +55,13 @@ class _HomeViewState extends State<HomeView> {
           child: BottomNavigationBar(
             currentIndex: currentIndex,
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
+            backgroundColor: context.card,
             elevation: 0,
             selectedItemColor: _rose,
             unselectedItemColor: const Color(0xFF8A8A8A),
-            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            selectedLabelStyle:
+            const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+            unselectedLabelStyle: const TextStyle(fontSize: 11),
             onTap: (index) {
               setState(() {
                 currentIndex = index;
@@ -68,8 +75,14 @@ class _HomeViewState extends State<HomeView> {
                   icon: const Icon(Icons.search_rounded),
                   label: tr('بحث', 'Search')),
               BottomNavigationBarItem(
+                  icon: const Icon(Icons.menu_book_rounded),
+                  label: tr('مكتبتي', 'Library')),
+              BottomNavigationBarItem(
                   icon: const Icon(Icons.favorite_rounded),
-                  label: tr('المفضلة', 'My favorites')),
+                  label: tr('المفضلة', 'Favorites')),
+              BottomNavigationBarItem(
+                  icon: const Icon(Icons.more_horiz_rounded),
+                  label: tr('المزيد', 'More')),
             ],
           ),
         ),
@@ -115,7 +128,7 @@ class _HomeContentState extends State<HomeContent> {
           height: 88,
           margin: const EdgeInsets.all(5),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.card,
             borderRadius: BorderRadius.circular(16),
             boxShadow: _softShadow(),
           ),
@@ -124,8 +137,8 @@ class _HomeContentState extends State<HomeContent> {
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF3E4DB),
+                decoration: BoxDecoration(
+                  color: context.surface,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: _rose, size: 22),
@@ -146,7 +159,7 @@ class _HomeContentState extends State<HomeContent> {
   void showCategoryBooks(String title, String query) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFFF5EDE4),
+      backgroundColor: context.bg,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -193,7 +206,7 @@ class _HomeContentState extends State<HomeContent> {
                           return Container(
                             margin: const EdgeInsets.only(bottom: 10),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: context.card,
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: _softShadow(),
                             ),
@@ -300,7 +313,7 @@ class _HomeContentState extends State<HomeContent> {
                 hintStyle: const TextStyle(color: Color(0xFF8A8A8A)),
                 prefixIcon: const Icon(Icons.search, color: _rose),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: context.card,
                 contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -440,4 +453,5 @@ class _HomeContentState extends State<HomeContent> {
       ),
     );
   }
+
 }

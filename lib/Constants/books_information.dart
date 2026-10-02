@@ -127,3 +127,50 @@ Widget languageSwitch() {
     ),
   );
 }
+
+// ===================== مكتبتي (الكتب اللي بتقراها) =====================
+// readingBooks: الكتب اللي ضفتها لمكتبتي بزرار "قراءة الآن"
+// readingProgress: نسبة التقدم لكل كتاب من 0.0 لـ 1.0 (المفتاح = book['key'])
+List readingBooks = [];
+Map<String, double> readingProgress = {};
+
+bool isReading(Map book) {
+  for (var b in readingBooks) {
+    if (b['key'] == book['key']) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void startReading(Map book) {
+  if (isReading(book) == false) {
+    readingBooks.add(book);
+    readingProgress[book['key'].toString()] = 0.0;
+  }
+}
+
+double getProgress(Map book) {
+  return readingProgress[book['key'].toString()] ?? 0.0;
+}
+
+void setProgress(Map book, double value) {
+  readingProgress[book['key'].toString()] = value.clamp(0.0, 1.0);
+}
+
+void removeFromReading(Map book) {
+  readingBooks.removeWhere((b) => b['key'] == book['key']);
+  readingProgress.remove(book['key'].toString());
+}
+
+// ===================== الإعدادات =====================
+// حجم الخط: 0.9 صغير / 1.0 متوسط / 1.15 كبير
+ValueNotifier<double> fontScale = ValueNotifier(1.0);
+ValueNotifier<bool> notificationsOn = ValueNotifier(true);
+
+// الوضع الداكن
+ValueNotifier<bool> isDark = ValueNotifier(false);
+
+// ملف الكتاب اللي اختاره المستخدم من جهازه (PDF / TXT) وآخر صفحة وصلها في الـ PDF
+Map<String, String> bookFiles = {};
+Map<String, int> bookLastPage = {};

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:preproject_books/Constants/app_colors.dart';
 import 'package:preproject_books/Constants/books_information.dart';
 import '../widgets/empty_state_widgets.dart';
 import 'book_details_view.dart';
@@ -39,9 +40,9 @@ class _favoritesViewState extends State<favoritesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5EDE4),
+      backgroundColor: context.bg,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5EDE4),
+        backgroundColor: context.bg,
         elevation: 0,
         scrolledUnderElevation: 0,
         title: Text(
@@ -94,7 +95,7 @@ class _favoritesViewState extends State<favoritesView> {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.card,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
@@ -185,3 +186,4 @@ class _favoritesViewState extends State<favoritesView> {
     );
   }
 }
+

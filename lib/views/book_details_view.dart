@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:preproject_books/Constants/app_colors.dart';
 import 'package:preproject_books/Constants/books_information.dart';
+
 
 class BookDetailsView extends StatefulWidget {
   final Map book;
@@ -13,18 +15,20 @@ class _BookDetailsViewState extends State<BookDetailsView> {
   static const Color _rose = Color(0xFFA8434B);
 
   bool added = false;
+  bool reading = false;
 
   @override
   void initState() {
     super.initState();
     added = isInLibrary(widget.book);
+    reading = isReading(widget.book);
   }
 
   Widget infoChip(IconData icon, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.card,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -34,10 +38,10 @@ class _BookDetailsViewState extends State<BookDetailsView> {
           const SizedBox(width: 6),
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF5A5A5A)),
+                color: context.subText),
           ),
         ],
       ),
@@ -50,9 +54,9 @@ class _BookDetailsViewState extends State<BookDetailsView> {
     var year = (book['first_publish_year'] ?? '').toString();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5EDE4),
+      backgroundColor: context.bg,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5EDE4),
+        backgroundColor: context.bg,
         elevation: 0,
         scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
@@ -137,6 +141,39 @@ class _BookDetailsViewState extends State<BookDetailsView> {
             ],
           ),
           const SizedBox(height: 26),
+          SizedBox(
+            height: 54,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _rose,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              onPressed: () {
+                if (!reading) {
+                  startReading(book);
+                  setState(() {
+                    reading = true;
+                  });
+                }
+                (context, book, onReturn: () {
+                  if (mounted) setState(() {});
+                });
+              },
+              icon: const Icon(Icons.auto_stories_rounded),
+              label: Text(
+                reading
+                    ? tr('متابعة القراءة', 'Continue reading')
+                    : tr('قراءة الآن', 'Read now'),
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
@@ -191,7 +228,7 @@ class _BookDetailsViewState extends State<BookDetailsView> {
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.card,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -225,11 +262,15 @@ class _BookDetailsViewState extends State<BookDetailsView> {
                 const SizedBox(height: 12),
                 Text(
                   tr(
-                    'هذا الكتاب من تأليف ${getAuthor(book)}. نُشر لأول مرة عام ${book['first_publish_year'] ?? '-'}.',
-                    'This book was written by ${getAuthor(book)}. First published in ${book['first_publish_year'] ?? '-'}.',
+                    'هذا الكتاب من تأليف ${getAuthor(
+                        book)}. نُشر لأول مرة عام ${book['first_publish_year'] ??
+                        '-'}.',
+                    'This book was written by ${getAuthor(
+                        book)}. First published in ${book['first_publish_year'] ??
+                        '-'}.',
                   ),
-                  style: const TextStyle(
-                    color: Color(0xFF6A6A6A),
+                  style: TextStyle(
+                    color: context.subText,
                     height: 1.7,
                     fontSize: 15,
                   ),
